@@ -6,7 +6,13 @@ const {
   postById,
   isPoster,
   deletePost,
-  updatePost
+  updatePost,
+  postPhoto,
+  singlePost,
+  like,
+  unlike,
+  comment,
+  uncomment
 } = require('../controllers/post');
 const { userById } = require('../controllers/user');
 const { requireSignin } = require('../controllers/auth');
@@ -16,6 +22,16 @@ const router = express.Router();
 
 router.get('/posts', getPosts);
 
+// like and unlike
+router.put('/post/like', requireSignin, like)
+router.put('/post/unlike', requireSignin, unlike)
+
+
+// comments
+router.put('/post/comment', requireSignin, comment);
+router.put('/post/uncomment', requireSignin, uncomment);
+
+
 router.post(
   '/post/new/:userId',
   requireSignin,
@@ -24,8 +40,13 @@ router.post(
 );
 
 router.get('/posts/by/:userId', requireSignin, getPostsByUser);
+router.get('/post/:postId', singlePost);
 router.put('/post/:postId', requireSignin, isPoster, updatePost);
 router.delete('/post/:postId', requireSignin, isPoster, deletePost);
+
+// photo
+router.get('/post/photo/:postId', postPhoto)
+
 
 // any route containing  : userId, our app will first execute userById()
 router.param('userId', userById);
